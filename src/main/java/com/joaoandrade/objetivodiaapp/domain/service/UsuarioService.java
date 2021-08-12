@@ -1,5 +1,7 @@
 package com.joaoandrade.objetivodiaapp.domain.service;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,5 +31,21 @@ public class UsuarioService {
 		}
 
 		usuario.setSenha(bCryptPasswordEncoder.encode(novaSenha));
+	}
+
+	@Transactional
+	public String esqueciASenha(String email) {
+		Usuario usuario = crudUsuarioService.buscarPorEmail(email);
+		String novaSenha = "alcanceseusobjetivos";
+		char[] letras = { 'A', 'B', 'C', 'D', 'X', 'x', 'z', 's', 'a', 'm' };
+		Random random = new Random();
+
+		for (int i = 0; i < letras.length; i++) {
+			novaSenha += letras[random.nextInt(letras.length - 1)];
+		}
+
+		usuario.setSenha(new BCryptPasswordEncoder().encode(novaSenha));
+
+		return novaSenha;
 	}
 }

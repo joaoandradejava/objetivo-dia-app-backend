@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.joaoandrade.objetivodiaapp.domain.exception.AcessoNegadoException;
 import com.joaoandrade.objetivodiaapp.domain.exception.EntidadeNaoEncontradaException;
+import com.joaoandrade.objetivodiaapp.domain.exception.ErroNoServidorException;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 
 @ControllerAdvice
@@ -36,6 +37,16 @@ public class ResourceHandler extends ResponseEntityExceptionHandler {
 		Error error = Error.ERRO_INTERNO_NO_SERVIDOR;
 		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(),
 				DEFAULT_MESSAGE, DEFAULT_MESSAGE);
+
+		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(ErroNoServidorException.class)
+	public ResponseEntity<Object> handleErroNoServidor(ErroNoServidorException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+		Error error = Error.ERRO_INTERNO_NO_SERVIDOR;
+		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(),
+				ex.getMessage(), DEFAULT_MESSAGE);
 
 		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
 	}

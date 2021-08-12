@@ -1,4 +1,4 @@
-package com.joaoandrade.objetivodiaapp.domain.validation;
+package com.joaoandrade.objetivodiaapp.domain.service.validation;
 
 import java.util.Optional;
 

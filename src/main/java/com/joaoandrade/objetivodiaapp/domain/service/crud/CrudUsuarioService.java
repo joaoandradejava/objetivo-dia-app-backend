@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.exception.UsuarioNaoEncontradoException;
 import com.joaoandrade.objetivodiaapp.domain.model.Usuario;
 import com.joaoandrade.objetivodiaapp.domain.repository.UsuarioRepository;
-import com.joaoandrade.objetivodiaapp.domain.validation.EmailUnicoValidacao;
+import com.joaoandrade.objetivodiaapp.domain.service.validation.EmailUnicoValidacao;
 
 @Service
 public class CrudUsuarioService {
@@ -22,6 +23,11 @@ public class CrudUsuarioService {
 
 	public Usuario buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
+	}
+
+	public Usuario buscarPorEmail(String email) {
+		return repository.findByEmail(email).orElseThrow(() -> new NegocioException(
+				String.format("Não existe nenhum usuario com o email '%s' cadastrado no sistema!", email)));
 	}
 
 	@Transactional

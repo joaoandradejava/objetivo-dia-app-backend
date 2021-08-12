@@ -24,6 +24,7 @@ import com.joaoandrade.objetivodiaapp.core.jwt.JwtUtil;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final String[] POST_PUBLIC = { "/usuarios" };
+	private static final String[] PUT_PUBLIC = { "/usuarios/esqueci-senha" };
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -39,7 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable().cors();
-		http.authorizeRequests().antMatchers(HttpMethod.POST, POST_PUBLIC).permitAll().anyRequest().authenticated();
+		http.authorizeRequests().antMatchers(HttpMethod.POST, POST_PUBLIC).permitAll()
+				.antMatchers(HttpMethod.PUT, PUT_PUBLIC).permitAll().anyRequest().authenticated();
 		http.addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtUtil));
 		http.addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 

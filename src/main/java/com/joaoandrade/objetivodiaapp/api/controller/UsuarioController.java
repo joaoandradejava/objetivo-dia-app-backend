@@ -3,6 +3,7 @@ package com.joaoandrade.objetivodiaapp.api.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.joaoandrade.objetivodiaapp.api.assembler.UsuarioModelAssembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioCreateInputDisassembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioUpdateInputDisassembler;
+import com.joaoandrade.objetivodiaapp.api.input.EsqueciSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.MudancaSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioCreateInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioUpdateInput;
@@ -25,6 +27,7 @@ import com.joaoandrade.objetivodiaapp.api.model.UsuarioModel;
 import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.model.Usuario;
+import com.joaoandrade.objetivodiaapp.domain.observer.EsqueciSenhaObserver;
 import com.joaoandrade.objetivodiaapp.domain.service.PermissaoAcessoService;
 import com.joaoandrade.objetivodiaapp.domain.service.UsuarioService;
 import com.joaoandrade.objetivodiaapp.domain.service.crud.CrudUsuarioService;
@@ -50,6 +53,9 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioService usuarioService;
+
+	@Autowired
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@GetMapping("/{id}/resumo")
 	public UsuarioModel buscarPorIdResumido(@PathVariable Long id,
@@ -105,6 +111,15 @@ public class UsuarioController {
 
 		usuarioService.mudarSenha(id, mudancaSenhaInput.getSenhaAtual(), mudancaSenhaInput.getNovaSenha(),
 				mudancaSenhaInput.getConfirmacaoSenha());
+	}
+
+	@PutMapping("/esqueci-senha")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void esqueciASenha(@Valid @RequestBody EsqueciSenhaInput esqueciSenhaInput) {
+		String novaSenha = usuarioService.esqueciASenha(esqueciSenhaInput.getEmail());
+		Usuario usuario = crudUsuarioService.buscarPorEmail(esqueciSenhaInput.getEmail());
+
+		applicationEventPublisher.publishEvent(new EsqueciSenhaObserver(usuario, novaSenha));
 	}
 
 }
