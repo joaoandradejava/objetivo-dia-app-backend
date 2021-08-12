@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.joaoandrade.objetivodiaapp.api.assembler.UsuarioModelAssembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioCreateInputDisassembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioUpdateInputDisassembler;
+import com.joaoandrade.objetivodiaapp.api.input.MudancaSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioCreateInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioUpdateInput;
 import com.joaoandrade.objetivodiaapp.api.model.UsuarioModel;
@@ -25,6 +26,7 @@ import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.model.Usuario;
 import com.joaoandrade.objetivodiaapp.domain.service.PermissaoAcessoService;
+import com.joaoandrade.objetivodiaapp.domain.service.UsuarioService;
 import com.joaoandrade.objetivodiaapp.domain.service.crud.CrudUsuarioService;
 
 @RestController
@@ -45,6 +47,9 @@ public class UsuarioController {
 
 	@Autowired
 	private PermissaoAcessoService permissaoAcessoService;
+
+	@Autowired
+	private UsuarioService usuarioService;
 
 	@GetMapping("/{id}/resumo")
 	public UsuarioModel buscarPorIdResumido(@PathVariable Long id,
@@ -89,6 +94,17 @@ public class UsuarioController {
 				"Você não tem permissão para deletar a conta de outro usuario");
 
 		crudUsuarioService.deletarPorId(id);
+	}
+
+	@PutMapping("/{id}/senha")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void mudarSenha(@PathVariable Long id, @Valid @RequestBody MudancaSenhaInput mudancaSenhaInput,
+			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
+		permissaoAcessoService.verificarSeTemPermissao(id, usuarioLogado,
+				"Você não tem permissão para alterar a senha de outro usuario!");
+
+		usuarioService.mudarSenha(id, mudancaSenhaInput.getSenhaAtual(), mudancaSenhaInput.getNovaSenha(),
+				mudancaSenhaInput.getConfirmacaoSenha());
 	}
 
 }
