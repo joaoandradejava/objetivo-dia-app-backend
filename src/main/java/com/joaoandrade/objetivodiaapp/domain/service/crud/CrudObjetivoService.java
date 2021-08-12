@@ -1,4 +1,4 @@
-package com.joaoandrade.objetivodiaapp.domain.service;
+package com.joaoandrade.objetivodiaapp.domain.service.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

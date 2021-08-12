@@ -1,6 +1,7 @@
-package com.joaoandrade.objetivodiaapp.domain.service;
+package com.joaoandrade.objetivodiaapp.domain.service.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -28,6 +29,8 @@ public class CrudUsuarioService {
 		if (StringUtils.hasLength(usuario.getEmail())) {
 			emailUnicoValidacao.validarEmailUnico(usuario);
 		}
+
+		usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 
 		return repository.save(usuario);
 	}

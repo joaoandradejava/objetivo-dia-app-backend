@@ -8,7 +8,9 @@ public enum Error {
 	PROPRIEDADE_INEXISTENTE("propriedade-inexistente", "Propriedade inexistente"),
 	ENDPOINT_NAO_ENCONTRADO("endpoint-nao-encontrado", "Endpoint não encontrado"),
 	METODO_NAO_SUPORTADO("metodo-nao-suportado", "Metodo não suportado"),
-	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor");
+	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor"),
+	CREDENCIAIS_INCORRETAS("credenciais-incorretas", "Credenciais incorretas"),
+	ACESSO_NEGADO("acesso-negado", "Acesso negado");
 
 	private String type;
 	private String title;

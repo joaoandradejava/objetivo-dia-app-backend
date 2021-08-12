@@ -63,6 +63,14 @@ public class Tarefa {
 		this.objetivo = objetivo;
 	}
 
+	public void fazerTarefa() {
+		this.isFeita = true;
+	}
+
+	public void desfazerTarefa() {
+		this.isFeita = false;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

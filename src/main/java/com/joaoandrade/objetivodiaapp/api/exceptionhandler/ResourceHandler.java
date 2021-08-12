@@ -18,6 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.joaoandrade.objetivodiaapp.domain.exception.AcessoNegadoException;
 import com.joaoandrade.objetivodiaapp.domain.exception.EntidadeNaoEncontradaException;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 
@@ -35,6 +36,17 @@ public class ResourceHandler extends ResponseEntityExceptionHandler {
 		Error error = Error.ERRO_INTERNO_NO_SERVIDOR;
 		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(),
 				DEFAULT_MESSAGE, DEFAULT_MESSAGE);
+
+		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(AcessoNegadoException.class)
+	public ResponseEntity<Object> handleAcessoNegado(AcessoNegadoException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		Error error = Error.ACESSO_NEGADO;
+		String message = ex.getMessage();
+		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(), message,
+				message);
 
 		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
 	}
