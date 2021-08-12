@@ -43,6 +43,7 @@ public class Usuario {
 	private List<Objetivo> objetivos = new ArrayList<>();
 
 	public Usuario() {
+		adicionarPerfil(Perfil.CLIENTE);
 	}
 
 	public Usuario(Long id, String nome, String email, String senha, LocalDateTime dataCriacaoConta) {
@@ -51,6 +52,7 @@ public class Usuario {
 		this.email = email;
 		this.senha = senha;
 		this.dataCriacaoConta = dataCriacaoConta;
+		adicionarPerfil(Perfil.CLIENTE);
 	}
 
 	public Long getId() {
@@ -107,6 +109,10 @@ public class Usuario {
 
 	public void setObjetivos(List<Objetivo> objetivos) {
 		this.objetivos = objetivos;
+	}
+
+	public void adicionarPerfil(Perfil perfil) {
+		this.perfis.add(perfil);
 	}
 
 	@Override
