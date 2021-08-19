@@ -1,8 +1,8 @@
 package com.joaoandrade.objetivodiaapp.domain.service.crud;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +29,10 @@ public class CrudTarefaService {
 
 	}
 
-	public Page<Tarefa> buscarTodasTarefasDoObjetivo(Long objetivoId, Pageable pageable) {
+	public List<Tarefa> buscarTodasTarefasDoObjetivo(Long objetivoId) {
 		buscarObjetivoPorId(objetivoId);
 
-		return repository.buscarTodasTarefasDoObjetivo(objetivoId, pageable);
+		return repository.buscarTodasTarefasDoObjetivo(objetivoId);
 	}
 
 	public Tarefa buscarTarefaPorId(Long objetivoId, Long tarefaId) {

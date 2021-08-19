@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,8 +49,8 @@ public class UsuarioObjetivoController {
 	private PermissaoAcessoService permissaoAcessoService;
 
 	@GetMapping
-	public Page<ObjetivoModel> buscarObjetivos(@PathVariable Long usuarioId, Pageable pageable,
-			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
+	public Page<ObjetivoModel> buscarObjetivos(@PathVariable Long usuarioId,
+			@PageableDefault(size = 10) Pageable pageable, @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		permissaoAcessoService.verificarSeTemPermissao(usuarioId, usuarioLogado,
 				"Você não tem permissão para acessar os objetivos de outro usuario");
 

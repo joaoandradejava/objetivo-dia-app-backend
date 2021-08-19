@@ -1,10 +1,11 @@
 package com.joaoandrade.objetivodiaapp.api.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,13 +54,13 @@ public class ObjetivoTarefaController {
 	}
 
 	@GetMapping
-	public Page<TarefaModel> buscarTodasTarefasDoObjetivo(@PathVariable Long objetivoId, Pageable pageable,
+	public List<TarefaModel> buscarTodasTarefasDoObjetivo(@PathVariable Long objetivoId,
 			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		verificarSeTemPermissao(objetivoId, usuarioLogado);
 
-		Page<Tarefa> page = crudTarefaService.buscarTodasTarefasDoObjetivo(objetivoId, pageable);
+		List<Tarefa> lista = crudTarefaService.buscarTodasTarefasDoObjetivo(objetivoId);
 
-		return page.map(tarefa -> tarefaModelAssembler.toModel(tarefa));
+		return lista.stream().map(x -> tarefaModelAssembler.toModel(x)).collect(Collectors.toList());
 	}
 
 	@GetMapping("/{tarefaId}")
