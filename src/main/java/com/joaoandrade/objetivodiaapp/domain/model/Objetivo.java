@@ -82,6 +82,22 @@ public class Objetivo {
 		this.tarefas = tarefas;
 	}
 
+	public int porcetagem() {
+		if (tarefas.size() == 0) {
+			return 0;
+		}
+
+		double porcentagem = 0.0;
+
+		for (Tarefa tarefa : this.tarefas) {
+			if (tarefa.getIsFeita()) {
+				porcentagem++;
+			}
+		}
+
+		return (int) ((porcentagem / tarefas.size()) * 100.0);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -8,6 +8,7 @@ public class ObjetivoFullModel {
 	private Long id;
 	private String titulo;
 	private LocalDateTime data;
+	private int porcentagem;
 	private List<TarefaModel> tarefas = new ArrayList<>();
 
 	public ObjetivoFullModel() {
@@ -35,6 +36,14 @@ public class ObjetivoFullModel {
 
 	public void setData(LocalDateTime data) {
 		this.data = data;
+	}
+
+	public int getPorcentagem() {
+		return porcentagem;
+	}
+
+	public void setPorcentagem(int porcentagem) {
+		this.porcentagem = porcentagem;
 	}
 
 	public List<TarefaModel> getTarefas() {

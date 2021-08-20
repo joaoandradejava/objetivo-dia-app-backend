@@ -14,7 +14,10 @@ public class ObjetivoFullModelAssembler {
 	private ModelMapper modelMapper;
 
 	public ObjetivoFullModel toModel(Objetivo objetivo) {
-		return modelMapper.map(objetivo, ObjetivoFullModel.class);
+		ObjetivoFullModel objetivoFullModel = modelMapper.map(objetivo, ObjetivoFullModel.class);
+		objetivoFullModel.setPorcentagem(objetivo.porcetagem());
+
+		return objetivoFullModel;
 	}
 
 }

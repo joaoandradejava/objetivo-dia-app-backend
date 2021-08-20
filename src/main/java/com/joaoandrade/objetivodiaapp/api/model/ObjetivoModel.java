@@ -6,6 +6,7 @@ public class ObjetivoModel {
 	private Long id;
 	private String titulo;
 	private LocalDateTime data;
+	private int porcentagem;
 
 	public ObjetivoModel() {
 	}
@@ -32,6 +33,14 @@ public class ObjetivoModel {
 
 	public void setData(LocalDateTime data) {
 		this.data = data;
+	}
+
+	public int getPorcentagem() {
+		return porcentagem;
+	}
+
+	public void setPorcentagem(int porcentagem) {
+		this.porcentagem = porcentagem;
 	}
 
 }
