@@ -25,6 +25,7 @@ import com.joaoandrade.objetivodiaapp.api.input.UsuarioCreateInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioUpdateInput;
 import com.joaoandrade.objetivodiaapp.api.model.UsuarioModel;
 import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
+import com.joaoandrade.objetivodiaapp.domain.dto.GraficoObjetivoConcluidoDTO;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.model.Usuario;
 import com.joaoandrade.objetivodiaapp.domain.observer.EsqueciSenhaObserver;
@@ -120,6 +121,13 @@ public class UsuarioController {
 		Usuario usuario = crudUsuarioService.buscarPorEmail(esqueciSenhaInput.getEmail());
 
 		applicationEventPublisher.publishEvent(new EsqueciSenhaObserver(usuario, novaSenha));
+	}
+
+	@GetMapping("/{id}/objetivos/grafico-conclusao")
+	public GraficoObjetivoConcluidoDTO obterGraficoDosObjetivosConcluidos(@PathVariable Long id) {
+		GraficoObjetivoConcluidoDTO graficoObjetivoConcluidoDTO = usuarioService.obterGraficoDosObjetivosConcluidos(id);
+
+		return graficoObjetivoConcluidoDTO;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.joaoandrade.objetivodiaapp.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,4 +19,7 @@ public interface ObjetivoRepository extends JpaRepository<Objetivo, Long> {
 
 	@Query("select o from Objetivo o where o.usuario.id = ?1 and o.id = ?2")
 	Optional<Objetivo> buscarObjetivoDoUsuario(Long usuarioId, Long objetivoId);
+
+	@Query("select o from Objetivo o where o.usuario.id = ?1")
+	List<Objetivo> buscarObjetivosDoUsuario(Long usuarioId);
 }

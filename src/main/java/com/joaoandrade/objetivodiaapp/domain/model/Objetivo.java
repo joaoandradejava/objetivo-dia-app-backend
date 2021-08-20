@@ -98,6 +98,20 @@ public class Objetivo {
 		return (int) ((porcentagem / tarefas.size()) * 100.0);
 	}
 
+	public boolean isConcluido() {
+		if (tarefas.size() == 0) {
+			return false;
+		}
+
+		for (Tarefa tarefa : tarefas) {
+			if (tarefa.getIsFeita() == false) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

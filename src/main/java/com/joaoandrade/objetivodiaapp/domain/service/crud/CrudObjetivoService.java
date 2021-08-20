@@ -1,5 +1,7 @@
 package com.joaoandrade.objetivodiaapp.domain.service.crud;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,12 @@ public class CrudObjetivoService {
 		crudUsuarioService.buscarPorId(usuarioId);
 
 		return repository.buscarObjetivos(usuarioId, pageable);
+	}
+
+	public List<Objetivo> buscarObjetivos(Long usuarioId) {
+		crudUsuarioService.buscarPorId(usuarioId);
+
+		return repository.buscarObjetivosDoUsuario(usuarioId);
 	}
 
 	public Objetivo buscarObjetivoPorId(Long usuarioId, Long objetivoId) {
