@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,13 +56,14 @@ public class ObjetivoTarefaController {
 	}
 
 	@GetMapping
-	public List<TarefaModel> buscarTodasTarefasDoObjetivo(@PathVariable Long objetivoId,
+	public ResponseEntity<List<TarefaModel>> buscarTodasTarefasDoObjetivo(@PathVariable Long objetivoId,
 			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		verificarSeTemPermissao(objetivoId, usuarioLogado);
 
 		List<Tarefa> lista = crudTarefaService.buscarTodasTarefasDoObjetivo(objetivoId);
 
-		return lista.stream().map(x -> tarefaModelAssembler.toModel(x)).collect(Collectors.toList());
+		return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+				.body(lista.stream().map(x -> tarefaModelAssembler.toModel(x)).collect(Collectors.toList()));
 	}
 
 	@GetMapping("/{tarefaId}")

@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +52,7 @@ public class UsuarioObjetivoController {
 	private PermissaoAcessoService permissaoAcessoService;
 
 	@GetMapping
-	public Page<ObjetivoModel> buscarObjetivos(@PathVariable Long usuarioId,
+	public ResponseEntity<Page<ObjetivoModel>> buscarObjetivos(@PathVariable Long usuarioId,
 			@PageableDefault(size = 10, sort = "data", direction = Direction.DESC) Pageable pageable,
 			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		permissaoAcessoService.verificarSeTemPermissao(usuarioId, usuarioLogado,
@@ -58,18 +60,20 @@ public class UsuarioObjetivoController {
 
 		Page<Objetivo> page = crudObjetivoService.buscarObjetivos(usuarioId, pageable);
 
-		return page.map(objetivo -> objetivoModelAssembler.toModel(objetivo));
+		return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+				.body(page.map(objetivo -> objetivoModelAssembler.toModel(objetivo)));
 	}
 
 	@GetMapping("/{objetivoId}")
-	public ObjetivoFullModel buscarObjetivoPorId(@PathVariable Long usuarioId, @PathVariable Long objetivoId,
-			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
+	public ResponseEntity<ObjetivoFullModel> buscarObjetivoPorId(@PathVariable Long usuarioId,
+			@PathVariable Long objetivoId, @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		permissaoAcessoService.verificarSeTemPermissao(usuarioId, usuarioLogado,
 				"Você não tem permissão para acessar os objetivos de outro usuario");
 
 		Objetivo objetivo = crudObjetivoService.buscarObjetivoPorId(usuarioId, objetivoId);
 
-		return objetivoFullModelAssembler.toModel(objetivo);
+		return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+				.body(objetivoFullModelAssembler.toModel(objetivo));
 	}
 
 	@PostMapping

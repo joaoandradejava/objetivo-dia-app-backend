@@ -1,10 +1,14 @@
 package com.joaoandrade.objetivodiaapp.api.controller;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,14 +63,14 @@ public class UsuarioController {
 	private ApplicationEventPublisher applicationEventPublisher;
 
 	@GetMapping("/{id}/resumo")
-	public UsuarioModel buscarPorIdResumido(@PathVariable Long id,
+	public ResponseEntity<UsuarioModel> buscarPorIdResumido(@PathVariable Long id,
 			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
 		permissaoAcessoService.verificarSeTemPermissao(id, usuarioLogado,
 				"Você não tem permissão para acessar os dados de outros usuario");
 
 		Usuario usuario = crudUsuarioService.buscarPorId(id);
 
-		return usuarioModelAssembler.toModel(usuario);
+		return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(usuarioModelAssembler.toModel(usuario));
 	}
 
 	@PostMapping
@@ -124,10 +128,11 @@ public class UsuarioController {
 	}
 
 	@GetMapping("/{id}/objetivos/grafico-conclusao")
-	public GraficoObjetivoConcluidoDTO obterGraficoDosObjetivosConcluidos(@PathVariable Long id) {
+	public ResponseEntity<GraficoObjetivoConcluidoDTO> obterGraficoDosObjetivosConcluidos(@PathVariable Long id) {
 		GraficoObjetivoConcluidoDTO graficoObjetivoConcluidoDTO = usuarioService.obterGraficoDosObjetivosConcluidos(id);
 
-		return graficoObjetivoConcluidoDTO;
+		return ResponseEntity.ok().cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+				.body(graficoObjetivoConcluidoDTO);
 	}
 
 }
