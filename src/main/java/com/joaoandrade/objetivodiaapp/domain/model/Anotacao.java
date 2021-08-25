@@ -106,7 +106,7 @@ public class Anotacao {
 		int tamanhoMaximo = conteudo.length() > 255 ? 255 : conteudo.length();
 		String conteudoResumido = "";
 
-		for (int i = 0; i <= tamanhoMaximo; i++) {
+		for (int i = 0; i < tamanhoMaximo; i++) {
 			conteudoResumido += this.conteudo.charAt(i);
 		}
 
