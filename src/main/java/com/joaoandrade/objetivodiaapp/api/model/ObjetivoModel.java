@@ -7,6 +7,9 @@ public class ObjetivoModel {
 	private String titulo;
 	private LocalDateTime data;
 	private int porcentagem;
+	private int totalTarefas;
+	private int totalTarefasConcluidas;
+	private CategoriaModel categoria;
 
 	public ObjetivoModel() {
 	}
@@ -41,6 +44,30 @@ public class ObjetivoModel {
 
 	public void setPorcentagem(int porcentagem) {
 		this.porcentagem = porcentagem;
+	}
+
+	public int getTotalTarefas() {
+		return totalTarefas;
+	}
+
+	public void setTotalTarefas(int totalTarefas) {
+		this.totalTarefas = totalTarefas;
+	}
+
+	public int getTotalTarefasConcluidas() {
+		return totalTarefasConcluidas;
+	}
+
+	public void setTotalTarefasConcluidas(int totalTarefasConcluidas) {
+		this.totalTarefasConcluidas = totalTarefasConcluidas;
+	}
+
+	public CategoriaModel getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(CategoriaModel categoria) {
+		this.categoria = categoria;
 	}
 
 }

@@ -29,16 +29,21 @@ public class Objetivo {
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
 
+	@ManyToOne
+	@JoinColumn(name = "categoria_id")
+	private Categoria categoria;
+
 	@OneToMany(mappedBy = "objetivo", orphanRemoval = true)
 	private List<Tarefa> tarefas = new ArrayList<>();
 
 	public Objetivo() {
 	}
 
-	public Objetivo(Long id, String titulo, LocalDateTime data, Usuario usuario) {
+	public Objetivo(Long id, String titulo, LocalDateTime data, Categoria categoria, Usuario usuario) {
 		this.id = id;
 		this.titulo = titulo;
 		this.data = data;
+		this.categoria = categoria;
 		this.usuario = usuario;
 	}
 
@@ -66,6 +71,14 @@ public class Objetivo {
 		this.data = data;
 	}
 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -80,6 +93,22 @@ public class Objetivo {
 
 	public void setTarefas(List<Tarefa> tarefas) {
 		this.tarefas = tarefas;
+	}
+
+	public int quantidadeTotalDeTarefa() {
+		return this.tarefas.size();
+	}
+
+	public int quantidadeDeTarefasConcluidas() {
+		int total = 0;
+
+		for (Tarefa tarefa : this.tarefas) {
+			if (tarefa.getIsFeita()) {
+				total++;
+			}
+		}
+
+		return total;
 	}
 
 	public int porcetagem() {

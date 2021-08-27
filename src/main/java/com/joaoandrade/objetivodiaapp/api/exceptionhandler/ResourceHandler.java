@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.joaoandrade.objetivodiaapp.domain.exception.AcessoNegadoException;
+import com.joaoandrade.objetivodiaapp.domain.exception.EntidadeEmUsoException;
 import com.joaoandrade.objetivodiaapp.domain.exception.EntidadeNaoEncontradaException;
 import com.joaoandrade.objetivodiaapp.domain.exception.ErroNoServidorException;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
@@ -62,10 +64,32 @@ public class ResourceHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
 	}
 
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		Error error = Error.ACESSO_NEGADO;
+		String message = "Acesso negado";
+		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(), message,
+				message);
+
+		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
+	}
+
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		Error error = Error.NEGOCIO_EXCEPTION;
+		String message = ex.getMessage();
+		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(), message,
+				message);
+
+		return handleExceptionInternal(ex, problemDetail, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(EntidadeEmUsoException.class)
+	public ResponseEntity<Object> handleEntidadeEmUso(EntidadeEmUsoException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.CONFLICT;
+		Error error = Error.ENTIDADE_EM_USO;
 		String message = ex.getMessage();
 		ProblemDetail problemDetail = new ProblemDetail(error.getType(), error.getTitle(), status.value(), message,
 				message);

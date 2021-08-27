@@ -28,6 +28,8 @@ import com.joaoandrade.objetivodiaapp.api.input.ObjetivoInput;
 import com.joaoandrade.objetivodiaapp.api.model.ObjetivoFullModel;
 import com.joaoandrade.objetivodiaapp.api.model.ObjetivoModel;
 import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
+import com.joaoandrade.objetivodiaapp.domain.exception.CategoriaNaoEncontradaException;
+import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.model.Objetivo;
 import com.joaoandrade.objetivodiaapp.domain.service.PermissaoAcessoService;
 import com.joaoandrade.objetivodiaapp.domain.service.crud.CrudObjetivoService;
@@ -80,13 +82,19 @@ public class UsuarioObjetivoController {
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ObjetivoFullModel salvar(@Valid @RequestBody ObjetivoInput objetivoInput, @PathVariable Long usuarioId,
 			@AuthenticationPrincipal UsuarioLogado usuarioLogado) {
+
 		permissaoAcessoService.verificarSeTemPermissao(usuarioId, usuarioLogado,
 				"Você não tem permissão para acessar os objetivos de outro usuario");
 
-		Objetivo objetivo = crudObjetivoService.salvar(objetivoInputDisassembler.toDomainModel(objetivoInput),
-				usuarioId);
+		try {
 
-		return objetivoFullModelAssembler.toModel(objetivo);
+			Objetivo objetivo = crudObjetivoService.salvar(objetivoInputDisassembler.toDomainModel(objetivoInput),
+					usuarioId);
+
+			return objetivoFullModelAssembler.toModel(objetivo);
+		} catch (CategoriaNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 
 	@PutMapping("/{objetivoId}")
@@ -95,11 +103,15 @@ public class UsuarioObjetivoController {
 		permissaoAcessoService.verificarSeTemPermissao(usuarioId, usuarioLogado,
 				"Você não tem permissão para acessar os objetivos de outro usuario");
 
-		Objetivo objetivo = crudObjetivoService.buscarObjetivoPorId(usuarioId, objetivoId);
-		objetivoInputDisassembler.copyToDomainModel(objetivoInput, objetivo);
-		objetivo = crudObjetivoService.atualizar(objetivo);
+		try {
+			Objetivo objetivo = crudObjetivoService.buscarObjetivoPorId(usuarioId, objetivoId);
+			objetivoInputDisassembler.copyToDomainModel(objetivoInput, objetivo);
+			objetivo = crudObjetivoService.atualizar(objetivo);
 
-		return objetivoFullModelAssembler.toModel(objetivo);
+			return objetivoFullModelAssembler.toModel(objetivo);
+		} catch (CategoriaNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 
 	@DeleteMapping("{objetivoId}")

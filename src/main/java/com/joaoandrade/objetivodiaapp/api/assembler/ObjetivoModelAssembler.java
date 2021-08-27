@@ -16,6 +16,8 @@ public class ObjetivoModelAssembler {
 	public ObjetivoModel toModel(Objetivo objetivo) {
 		ObjetivoModel objetivoModel = modelMapper.map(objetivo, ObjetivoModel.class);
 		objetivoModel.setPorcentagem(objetivo.porcetagem());
+		objetivoModel.setTotalTarefas(objetivo.quantidadeTotalDeTarefa());
+		objetivoModel.setTotalTarefasConcluidas(objetivo.quantidadeDeTarefasConcluidas());
 
 		return objetivoModel;
 	}

@@ -22,6 +22,9 @@ public class CrudObjetivoService {
 	@Autowired
 	private CrudUsuarioService crudUsuarioService;
 
+	@Autowired
+	private CrudCategoriaService crudCategoriaService;
+
 	public Page<Objetivo> buscarObjetivos(Long usuarioId, Pageable pageable) {
 		crudUsuarioService.buscarPorId(usuarioId);
 
@@ -45,12 +48,15 @@ public class CrudObjetivoService {
 	@Transactional
 	public Objetivo salvar(Objetivo objetivo, Long usuarioId) {
 		objetivo.setUsuario(crudUsuarioService.buscarPorId(usuarioId));
+		objetivo.setCategoria(crudCategoriaService.buscarPorId(objetivo.getCategoria().getId()));
 
 		return repository.save(objetivo);
 	}
 
 	@Transactional
 	public Objetivo atualizar(Objetivo objetivo) {
+		objetivo.setCategoria(crudCategoriaService.buscarPorId(objetivo.getCategoria().getId()));
+
 		return repository.save(objetivo);
 	}
 

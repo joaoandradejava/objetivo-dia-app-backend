@@ -10,7 +10,7 @@ public enum Error {
 	METODO_NAO_SUPORTADO("metodo-nao-suportado", "Metodo não suportado"),
 	ERRO_INTERNO_NO_SERVIDOR("erro-interno-no-servidor", "Erro interno no servidor"),
 	CREDENCIAIS_INCORRETAS("credenciais-incorretas", "Credenciais incorretas"),
-	ACESSO_NEGADO("acesso-negado", "Acesso negado");
+	ACESSO_NEGADO("acesso-negado", "Acesso negado"), ENTIDADE_EM_USO("entidade-em-uso", "Entidade em Uso");
 
 	private String type;
 	private String title;
