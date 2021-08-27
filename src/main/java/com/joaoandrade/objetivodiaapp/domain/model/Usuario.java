@@ -45,6 +45,9 @@ public class Usuario {
 	@OneToMany(mappedBy = "usuario", orphanRemoval = true)
 	private List<Anotacao> anotacoes = new ArrayList<>();
 
+	@OneToMany(mappedBy = "usuario", orphanRemoval = true)
+	private List<Feedback> feedbacks = new ArrayList<>();
+
 	public Usuario() {
 		adicionarPerfil(Perfil.CLIENTE);
 	}
@@ -124,6 +127,14 @@ public class Usuario {
 
 	public void setAnotacoes(List<Anotacao> anotacoes) {
 		this.anotacoes = anotacoes;
+	}
+
+	public List<Feedback> getFeedbacks() {
+		return feedbacks;
+	}
+
+	public void setFeedbacks(List<Feedback> feedbacks) {
+		this.feedbacks = feedbacks;
 	}
 
 	@Override
