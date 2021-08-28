@@ -121,6 +121,10 @@ public class Usuario {
 		this.perfis.add(perfil);
 	}
 
+	public void removerPerfil(Perfil perfil) {
+		this.perfis.remove(perfil);
+	}
+
 	public List<Anotacao> getAnotacoes() {
 		return anotacoes;
 	}
@@ -135,6 +139,18 @@ public class Usuario {
 
 	public void setFeedbacks(List<Feedback> feedbacks) {
 		this.feedbacks = feedbacks;
+	}
+
+	public void darAcessoDeAdministrador() {
+		adicionarPerfil(Perfil.ADMIN);
+	}
+
+	public void removerAcessoDeAdministrador() {
+		removerPerfil(Perfil.ADMIN);
+	}
+
+	public String pegarOTipoDePerfil() {
+		return this.perfis.contains(Perfil.ADMIN) ? "Administrador" : "Cliente";
 	}
 
 	@Override

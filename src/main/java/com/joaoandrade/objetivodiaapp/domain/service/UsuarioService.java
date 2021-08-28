@@ -71,4 +71,18 @@ public class UsuarioService {
 
 		return new GraficoObjetivoConcluidoDTO(objetivosConcluidos, objetivosNaoConcluidos);
 	}
+
+	@Transactional
+	public void darAcessoDeAdministrador(Long id) {
+		Usuario usuario = crudUsuarioService.buscarPorId(id);
+
+		usuario.darAcessoDeAdministrador();
+	}
+
+	@Transactional
+	public void removerAcessoDeAdministrador(Long id) {
+		Usuario usuario = crudUsuarioService.buscarPorId(id);
+
+		usuario.removerAcessoDeAdministrador();
+	}
 }

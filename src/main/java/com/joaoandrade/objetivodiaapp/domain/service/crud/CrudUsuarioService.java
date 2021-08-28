@@ -1,6 +1,8 @@
 package com.joaoandrade.objetivodiaapp.domain.service.crud;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,18 @@ public class CrudUsuarioService {
 
 	@Autowired
 	private EmailUnicoValidacao emailUnicoValidacao;
+
+	public Page<Usuario> buscarTodos(Pageable pageable) {
+		return repository.findAll(pageable);
+	}
+
+	public Page<Usuario> buscarPorNome(String nome, Pageable pageable) {
+		return repository.buscarPorNome(nome, pageable);
+	}
+
+	public Page<Usuario> buscarPorEmail(String email, Pageable pageable) {
+		return repository.buscarPorEmail(email, pageable);
+	}
 
 	public Usuario buscarPorId(Long id) {
 		return repository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(id));
@@ -52,4 +66,5 @@ public class CrudUsuarioService {
 
 		repository.deleteById(id);
 	}
+
 }

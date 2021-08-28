@@ -6,10 +6,14 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joaoandrade.objetivodiaapp.api.assembler.UsuarioModelAssembler;
+import com.joaoandrade.objetivodiaapp.api.assembler.UsuarioPerfilModelAssembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioCreateInputDisassembler;
 import com.joaoandrade.objetivodiaapp.api.disassembler.UsuarioUpdateInputDisassembler;
 import com.joaoandrade.objetivodiaapp.api.input.EsqueciSenhaInput;
@@ -28,6 +33,7 @@ import com.joaoandrade.objetivodiaapp.api.input.MudancaSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioCreateInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioUpdateInput;
 import com.joaoandrade.objetivodiaapp.api.model.UsuarioModel;
+import com.joaoandrade.objetivodiaapp.api.model.UsuarioPerfilModel;
 import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
 import com.joaoandrade.objetivodiaapp.domain.dto.GraficoObjetivoConcluidoDTO;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
@@ -61,6 +67,34 @@ public class UsuarioController {
 
 	@Autowired
 	private ApplicationEventPublisher applicationEventPublisher;
+
+	@Autowired
+	private UsuarioPerfilModelAssembler usuarioPerfilModelAssembler;
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping
+	public ResponseEntity<Page<UsuarioPerfilModel>> buscarTodos(Pageable pageable, String nome, String email) {
+		Page<Usuario> page = null;
+		if (StringUtils.hasLength(nome)) {
+			page = crudUsuarioService.buscarPorNome(nome, pageable);
+
+			return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+					.body(page.map(x -> usuarioPerfilModelAssembler.toModel(x)));
+
+		}
+
+		if (StringUtils.hasLength(email)) {
+			page = crudUsuarioService.buscarPorEmail(email, pageable);
+
+			return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+					.body(page.map(x -> usuarioPerfilModelAssembler.toModel(x)));
+
+		}
+
+		page = crudUsuarioService.buscarTodos(pageable);
+		return ResponseEntity.ok().cacheControl(CacheControl.noCache())
+				.body(page.map(x -> usuarioPerfilModelAssembler.toModel(x)));
+	}
 
 	@GetMapping("/{id}/resumo")
 	public ResponseEntity<UsuarioModel> buscarPorIdResumido(@PathVariable Long id,
@@ -135,4 +169,17 @@ public class UsuarioController {
 				.body(graficoObjetivoConcluidoDTO);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
+	@PutMapping("/{id}/admin")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void darAcessoDeAdministrador(@PathVariable Long id) {
+		usuarioService.darAcessoDeAdministrador(id);
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/{id}/admin")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void removerAcessoDeAdministrador(@PathVariable Long id) {
+		usuarioService.removerAcessoDeAdministrador(id);
+	}
 }
