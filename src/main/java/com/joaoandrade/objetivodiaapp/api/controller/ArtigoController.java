@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +61,7 @@ public class ArtigoController {
 		return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(artigoFullModelAssembler.toModel(artigo));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public ArtigoFullModel salvar(@Valid @RequestBody ArtigoInput artigoInput) {
@@ -72,6 +74,7 @@ public class ArtigoController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ArtigoFullModel atualizar(@Valid @RequestBody ArtigoInput artigoInput, @PathVariable Long id) {
 		try {
@@ -85,6 +88,7 @@ public class ArtigoController {
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void deletarPorId(@PathVariable Long id) {
