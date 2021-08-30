@@ -8,6 +8,7 @@ public class ArtigoModel {
 	private String avatarUrl;
 	private String autor;
 	private String descricao;
+	private CategoriaModel categoria;
 	private LocalDateTime dataPublicacao;
 	private LocalDateTime dataAtualizacao;
 
@@ -52,6 +53,14 @@ public class ArtigoModel {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public CategoriaModel getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(CategoriaModel categoria) {
+		this.categoria = categoria;
 	}
 
 	public LocalDateTime getDataPublicacao() {
