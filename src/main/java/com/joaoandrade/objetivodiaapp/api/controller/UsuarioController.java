@@ -1,5 +1,8 @@
 package com.joaoandrade.objetivodiaapp.api.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
@@ -32,16 +35,20 @@ import com.joaoandrade.objetivodiaapp.api.input.EsqueciSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.MudancaSenhaInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioCreateInput;
 import com.joaoandrade.objetivodiaapp.api.input.UsuarioUpdateInput;
+import com.joaoandrade.objetivodiaapp.api.model.RelatorioModel;
 import com.joaoandrade.objetivodiaapp.api.model.UsuarioModel;
 import com.joaoandrade.objetivodiaapp.api.model.UsuarioPerfilModel;
 import com.joaoandrade.objetivodiaapp.core.security.UsuarioLogado;
 import com.joaoandrade.objetivodiaapp.domain.dto.GraficoObjetivoConcluidoDTO;
+import com.joaoandrade.objetivodiaapp.domain.exception.ErroNoServidorException;
 import com.joaoandrade.objetivodiaapp.domain.exception.NegocioException;
 import com.joaoandrade.objetivodiaapp.domain.model.Usuario;
 import com.joaoandrade.objetivodiaapp.domain.observer.EsqueciSenhaObserver;
+import com.joaoandrade.objetivodiaapp.domain.repository.UsuarioRepository;
 import com.joaoandrade.objetivodiaapp.domain.service.PermissaoAcessoService;
 import com.joaoandrade.objetivodiaapp.domain.service.UsuarioService;
 import com.joaoandrade.objetivodiaapp.domain.service.crud.CrudUsuarioService;
+import com.joaoandrade.objetivodiaapp.domain.service.relatorio.RelatorioService;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -70,6 +77,12 @@ public class UsuarioController {
 
 	@Autowired
 	private UsuarioPerfilModelAssembler usuarioPerfilModelAssembler;
+
+	@Autowired
+	private RelatorioService relatorioService;
+
+	@Autowired
+	private UsuarioRepository repository;
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
@@ -181,5 +194,21 @@ public class UsuarioController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void removerAcessoDeAdministrador(@PathVariable Long id) {
 		usuarioService.removerAcessoDeAdministrador(id);
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/usuario-perfil/relatorio")
+	public RelatorioModel gerarRelatorioPerfil() {
+		try {
+			Map<String, Object> parametros = new HashMap<>();
+
+			List<UsuarioPerfilModel> lista = usuarioPerfilModelAssembler.toCollectionModel(repository.findAll());
+			String relatorioPdf = relatorioService.gerarRelatorio("perfil-usuario", parametros, lista);
+
+			return new RelatorioModel(relatorioPdf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ErroNoServidorException(e.getMessage());
+		}
 	}
 }
